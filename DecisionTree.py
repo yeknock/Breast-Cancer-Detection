@@ -15,4 +15,26 @@ class Node:
 
 # Tree class
 class DecisionTree:
-    def __init__():
+    def __init__(self, min_samples_split = 2, max_depth = 100, n_features = None):
+        self.min_samples_split = min_samples_split
+        self.max_depth = max_depth
+        self.n_features = n_features
+        self.root = None
+
+    def fit(self, X, y):
+        self.n_features = X.shape[1] if not self.n_features else min(X.shape[1], self.n_features)
+        self.root = self._grow_tree(X, y)
+
+
+    def _grow_tree(self, X, y):
+
+        # Check the stopping criteria
+
+
+        # Find the best split
+
+
+        #Create child nodes
+
+
+    def predict():
