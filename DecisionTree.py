@@ -47,7 +47,7 @@ class DecisionTree:
         right = self._grow_tree(X[right_idxs, :], y[right_idxs], depth + 1)
 
 
-        return Node()
+        return Node(best_feature, best_thresh, left, right, value = )
         
 
 
@@ -120,4 +120,17 @@ class DecisionTree:
         return value
 
 
-    def predict():
+    def predict(self, X):
+        return np.array([self._traverse_tree(x, self.root) for x in X])
+
+
+    def _traverse_tree(self, x, node):
+        if node.is_leaf_node():
+            return node.value()
+
+        if x[node.feature] <= node.threshold:
+            return self._traverse_tree(x, node.left)
+        return self._traverse_tree(x, node.right)
+
+
+        
