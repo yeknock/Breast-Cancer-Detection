@@ -3,9 +3,9 @@ from collections import Counter
 
 # here we are creating our own DecisionTree, so we starting by creating the Node class
 class Node:
-    def __init__(self, feature = None, treshold = None, left = None, right = None, *, value = None):
+    def __init__(self, feature = None, threshold = None, left = None, right = None, *, value = None):
         self.feature = feature
-        self.treshold = treshold
+        self.threshold = threshold
         self.left = left
         self.right = right
         self.value = None
@@ -39,38 +39,48 @@ class DecisionTree:
         feature_indexes = np.random.choice(n_features, self.n_features, replace = False)
 
         # Find the best split
-        best_feature, best_tresh = self._best_split(X, y, feature_indexes)
-
-        
+        best_feature, best_thresh = self._best_split(X, y, feature_indexes)
 
         #Create child nodes
+        left_idxs, right_idxs = self._split(X[:, best_feature], best_thresh)
+        left = self._grow_tree(X[left_idxs, :], y[left_idxs], depth + 1)
+        right = self._grow_tree(X[right_idxs, :], y[right_idxs], depth + 1)
+
+
+        return Node()
+        
+
+
+
+
+        
     def _best_split(self, X, y, feature_indexes):
         best_gain = -1
-        split_idx, split_treshold = None, None
+        split_idx, split_threshold = None, None
 
         for feature_index in feature_indexes:
             X_column = X[:, feature_index]
-            tresholds = np.unique(X_column)
+            thresholds = np.unique(X_column)
 
-            for thr in tresholds:
+            for thr in thresholds:
                 # Calculate the information gain
                 gain = self._information_gain(y, X_column, thr):
 
                 if gain > best_gain:
                     best_gain = gain
                     split_idx = feature_index
-                    split_treshold = thr
+                    split_threshold = thr
 
-        return split_idx, split_treshold
+        return split_idx, split_threshold
 
 
 
-    def _information_gain(self, y, X_column, treshold):
+    def _information_gain(self, y, X_column, threshold):
         # parent entropy
         parent_entropy = self._entropy(y)
 
         # create children
-        left_idxs, right_idxs = self._split(X_column, treshold)
+        left_idxs, right_idxs = self._split(X_column, threshold)
 
         if len(left_idxs) == 0 or len(right_idxs) == 0:
             return 0
@@ -78,24 +88,32 @@ class DecisionTree:
         # Calculate the weighted avreage entropy of children
         n = len(y)
         n_l, n_r = len(left_idxs), len(right_idxs)
-        e_l, e_r = self.entropy(y[left_idxs]), self.entropy(y[right_idxs])
-        child_entropy = (n_l/n) * e_l + (n_r/n)
+        e_l, e_r = self._entropy(y[left_idxs]), self._entropy(y[right_idxs])
+        child_entropy = (n_l/n) * e_l + (n_r/n) * e_r
 
         # Calculate the Information Gain (IG)
+        information_gain = parent_entropy - child_entropy
+        return information_gain
 
-    def _split(self, X_column, split_tresh):
-        left_indxs = np.argwhere(X_column <= split_tresh).flatten()
-        right_indxs = left_indxs = np.argwhere(X_column > split_tresh).flatten()
 
-        return left_indxs, right_indxs
+    
+    def _split(self, X_column, split_thresh):
+        left_idxs = np.argwhere(X_column <= split_thresh).flatten()
+        right_idxs = np.argwhere(X_column > split_thresh).flatten()
 
+        return left_idxs, right_idxs
+
+
+    
     def _entropy(self, y):
         hist = np.bitcount(y)
         ps = hits / len(y)
 
         return -np.sum([p * np.log(p) for p in ps if p > 0])
 
-        
+
+
+    
     def _most_common_label(self, y):
         counter = Counter(y)
         value = counter.most_common(1)[0][0]
