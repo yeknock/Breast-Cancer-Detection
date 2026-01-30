@@ -1,8 +1,7 @@
 # Breast Cancer Detection
 
-<p align="center">
-  <img src="https://www.medical-professionals.com/wp-content/uploads/2022/10/Banner-detect-breast-cancer-with-Ai.webp" width="350" title="hover text">
-</p>
+![Banner-detect-breast-cancer-with-Ai](https://github.com/user-attachments/assets/6c52a00b-3df6-4b52-9870-5ed73c189ce8)
+
 
 This project based on two famous models
 
